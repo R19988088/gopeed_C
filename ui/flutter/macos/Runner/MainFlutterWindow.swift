@@ -3,6 +3,8 @@ import FlutterMacOS
 import window_manager
 
 class MainFlutterWindow: NSWindow {
+  private var standardWindowButtonOrigins: [NSWindow.ButtonType: NSPoint] = [:]
+
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController.init()
     let windowFrame = self.frame
@@ -23,7 +25,14 @@ class MainFlutterWindow: NSWindow {
       alpha: 1.0
     )
 
+    scheduleStandardWindowButtonOffset()
+  }
+
+  private func scheduleStandardWindowButtonOffset() {
     DispatchQueue.main.async {
+      self.offsetStandardWindowButtons(x: 5, y: -5)
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
       self.offsetStandardWindowButtons(x: 5, y: -5)
     }
   }
@@ -31,13 +40,20 @@ class MainFlutterWindow: NSWindow {
   private func offsetStandardWindowButtons(x: CGFloat, y: CGFloat) {
     for type in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
       guard let button = standardWindowButton(type) else { continue }
-      button.frame.origin.x += x
-      button.frame.origin.y += y
+      let origin = standardWindowButtonOrigins[type] ?? button.frame.origin
+      standardWindowButtonOrigins[type] = origin
+      button.setFrameOrigin(NSPoint(x: origin.x + x, y: origin.y + y))
     }
+  }
+
+  override func becomeKey() {
+    super.becomeKey()
+    scheduleStandardWindowButtonOffset()
   }
 
   override public func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
     super.order(place, relativeTo: otherWin)
+    scheduleStandardWindowButtonOffset()
     hiddenWindowAtLaunch()
   }
 }

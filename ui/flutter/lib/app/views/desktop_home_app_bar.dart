@@ -46,15 +46,15 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (showMenu)
           Padding(
-            padding: const EdgeInsets.only(top: 5, right: 9),
+            padding: const EdgeInsets.only(right: 9),
             child: Align(
               alignment: Alignment.topCenter,
               child: InkResponse(
-                radius: 24,
+                radius: 22,
                 onTap: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
                 child: Container(
-                  width: 42,
-                  height: 42,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
