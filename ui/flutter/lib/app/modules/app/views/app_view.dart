@@ -23,8 +23,8 @@ class AppView extends GetView<AppController> {
       child: GetMaterialApp.router(
         useInheritedMediaQuery: true,
         debugShowCheckedModeBanner: false,
-        theme: GopeedTheme.light,
-        darkTheme: GopeedTheme.dark,
+        theme: GopeedTheme.light(config.extra.accentColor),
+        darkTheme: GopeedTheme.dark(config.extra.accentColor),
         themeMode: ThemeMode.values.byName(config.extra.themeMode),
         translations: messages,
         locale: toLocale(config.extra.locale),

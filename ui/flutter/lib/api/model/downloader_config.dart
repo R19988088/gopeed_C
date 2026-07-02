@@ -106,6 +106,7 @@ class Ed2kConfig {
 @JsonSerializable(explicitToJson: true)
 class ExtraConfig {
   String themeMode;
+  int accentColor;
   String locale;
   bool lastDeleteTaskKeep;
   bool defaultDirectDownload;
@@ -120,6 +121,7 @@ class ExtraConfig {
 
   ExtraConfig({
     this.themeMode = '',
+    this.accentColor = 0xFF79C476,
     this.locale = '',
     this.lastDeleteTaskKeep = false,
     this.defaultDirectDownload = false,

@@ -17,6 +17,7 @@ import '../../../../api/model/downloader_config.dart';
 import '../../../../database/database.dart';
 import '../../../../util/analytics.dart';
 import '../../../../i18n/message.dart';
+import '../../../../theme/theme.dart';
 import '../../../../util/input_formatter.dart';
 import '../../../../util/locale_manager.dart';
 import '../../../../util/log_util.dart';
@@ -25,6 +26,7 @@ import '../../../../util/package_info.dart';
 import '../../../../util/scheme_register/scheme_register.dart';
 import '../../../../util/updater.dart';
 import '../../../../util/util.dart';
+import '../../../routes/app_pages.dart';
 import '../../../views/check_list_view.dart';
 import '../../../views/desktop_home_app_bar.dart';
 import '../../../views/directory_selector.dart';
@@ -968,6 +970,28 @@ class SettingView extends GetView<SettingController> {
                       ))
                   .toList(),
             ));
+    Widget buildAccentColor() {
+      return ListTile(
+        title: const Text('强调色'),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: _AccentColorPicker(
+            color: Color(downloaderCfg.value.extra.accentColor),
+            onChanged: (color) {
+              downloaderCfg.update((val) {
+                val!.extra.accentColor = color.value;
+              });
+              Get.changeTheme(
+                Theme.of(context).brightness == Brightness.dark
+                    ? GopeedTheme.dark(color.value)
+                    : GopeedTheme.light(color.value),
+              );
+              debounceSave();
+            },
+          ),
+        ),
+      );
+    }
 
     // about config items start
     buildHomepage() {
@@ -1706,8 +1730,18 @@ class SettingView extends GetView<SettingController> {
         onTap: () {
           controller.clearTap();
         },
-        child: Scaffold(
-          appBar: DesktopHomeAppBar(title: 'setting'.tr),
+        child: DefaultTabController(
+          length: 2,
+          initialIndex: 1,
+          child: Scaffold(
+          appBar: DesktopHomeAppBar(
+            showBack: true,
+            showMenu: false,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(48),
+              child: _buildPageTabs(1),
+            ),
+          ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1784,6 +1818,7 @@ class SettingView extends GetView<SettingController> {
                     child: Column(
                   children: _addDivider([
                             buildTheme(),
+                            buildAccentColor(),
                             buildLocale(),
                           ]),
                 )),
@@ -1831,9 +1866,45 @@ class SettingView extends GetView<SettingController> {
               ]),
             ),
           ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16),
+          ),
         ),
       );
     });
+  }
+
+  Widget _buildPageTabs(int index) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        width: 360,
+        height: 42,
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFF3D7E3A)),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: TabBar(
+          indicator: const BoxDecoration(color: Color(0xFF3D7E3A)),
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white,
+          labelStyle: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+          tabs: [
+            Tab(text: 'extensions'.tr),
+            Tab(text: 'setting'.tr),
+          ],
+          onTap: (value) {
+            if (value == index) return;
+            Get.rootDelegate.offAndToNamed(
+              value == 0 ? Routes.EXTENSION : Routes.SETTING,
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void _showWebhookDialog({int? index, String? initialUrl}) {
@@ -2325,6 +2396,190 @@ class SettingView extends GetView<SettingController> {
         ],
       ),
     );
+  }
+}
+
+class _AccentColorPicker extends StatefulWidget {
+  const _AccentColorPicker({
+    required this.color,
+    required this.onChanged,
+  });
+
+  final Color color;
+  final ValueChanged<Color> onChanged;
+
+  @override
+  State<_AccentColorPicker> createState() => _AccentColorPickerState();
+}
+
+class _AccentColorPickerState extends State<_AccentColorPicker> {
+  late HSVColor _hsv;
+
+  @override
+  void initState() {
+    super.initState();
+    _hsv = HSVColor.fromColor(widget.color);
+  }
+
+  @override
+  void didUpdateWidget(covariant _AccentColorPicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.color.value != widget.color.value) {
+      _hsv = HSVColor.fromColor(widget.color);
+    }
+  }
+
+  void _update(HSVColor hsv) {
+    setState(() => _hsv = hsv);
+    widget.onChanged(hsv.toColor());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const squareSize = 180.0;
+    const hueWidth = 28.0;
+    final color = _hsv.toColor();
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onPanDown: (details) => _pickSv(details.localPosition, squareSize),
+          onPanUpdate: (details) => _pickSv(details.localPosition, squareSize),
+          child: Container(
+            width: squareSize,
+            height: squareSize,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  HSVColor.fromAHSV(1, _hsv.hue, 1, 1).toColor(),
+                ],
+              ),
+            ),
+            foregroundDecoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black],
+              ),
+            ),
+            child: CustomPaint(
+              painter: _SvThumbPainter(_hsv.saturation, _hsv.value),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        GestureDetector(
+          onPanDown: (details) => _pickHue(details.localPosition, squareSize),
+          onPanUpdate: (details) => _pickHue(details.localPosition, squareSize),
+          child: CustomPaint(
+            painter: _HuePainter(_hsv.hue),
+            child: const SizedBox(width: hueWidth, height: squareSize),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Theme.of(context).dividerColor),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _pickSv(Offset position, double size) {
+    _update(_hsv.withSaturation(
+      (position.dx / size).clamp(0, 1).toDouble(),
+    ).withValue(
+      (1 - position.dy / size).clamp(0, 1).toDouble(),
+    ));
+  }
+
+  void _pickHue(Offset position, double size) {
+    _update(_hsv.withHue(
+      (position.dy / size).clamp(0, 1).toDouble() * 360,
+    ));
+  }
+}
+
+class _SvThumbPainter extends CustomPainter {
+  _SvThumbPainter(this.saturation, this.value);
+
+  final double saturation;
+  final double value;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(saturation * size.width, (1 - value) * size.height);
+    canvas.drawCircle(
+      center,
+      7,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = Colors.white,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _SvThumbPainter oldDelegate) {
+    return oldDelegate.saturation != saturation || oldDelegate.value != value;
+  }
+}
+
+class _HuePainter extends CustomPainter {
+  _HuePainter(this.hue);
+
+  final double hue;
+
+  static final _hues = List.generate(
+    7,
+    (index) => HSVColor.fromAHSV(1, index * 60, 1, 1).toColor(),
+  );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(4)),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: _hues,
+        ).createShader(rect),
+    );
+    final y = (hue / 360) * size.height;
+    final marker = Path()
+      ..moveTo(-1, y - 6)
+      ..lineTo(-1, y + 6)
+      ..lineTo(7, y)
+      ..close();
+    canvas.drawPath(
+      marker,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      marker,
+      Paint()
+        ..color = Colors.black54
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HuePainter oldDelegate) {
+    return oldDelegate.hue != hue;
   }
 }
 

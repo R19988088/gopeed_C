@@ -14,6 +14,7 @@ import '../../../../api/model/store_extension.dart';
 import '../../../../api/model/update_extension_settings.dart';
 import '../../../../util/message.dart';
 import '../../../../util/util.dart';
+import '../../../routes/app_pages.dart';
 import '../../../views/desktop_home_app_bar.dart';
 import '../../../views/icon_button_loading.dart';
 import '../../../views/responsive_builder.dart';
@@ -73,8 +74,18 @@ class ExtensionView extends GetView<ExtensionController> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _doInstall());
     }
 
-    return Scaffold(
-      appBar: DesktopHomeAppBar(title: 'extensions'.tr),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+      appBar: DesktopHomeAppBar(
+        showBack: true,
+        showMenu: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: _buildPageTabs(0),
+        ),
+      ),
       body: SafeArea(
         child: Obx(
           () => RefreshIndicator(
@@ -130,6 +141,42 @@ class ExtensionView extends GetView<ExtensionController> {
               ],
             ),
           ),
+        ),
+      ),
+      ),
+    );
+  }
+
+  Widget _buildPageTabs(int index) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        width: 360,
+        height: 42,
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFF3D7E3A)),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: TabBar(
+          indicator: const BoxDecoration(color: Color(0xFF3D7E3A)),
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white,
+          labelStyle: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+          tabs: [
+            Tab(text: 'extensions'.tr),
+            Tab(text: 'setting'.tr),
+          ],
+          onTap: (value) {
+            if (value == index) return;
+            Get.rootDelegate.offAndToNamed(
+              value == 0 ? Routes.EXTENSION : Routes.SETTING,
+            );
+          },
         ),
       ),
     );

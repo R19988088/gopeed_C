@@ -1,41 +1,53 @@
 import 'package:flutter/material.dart';
 
 class GopeedTheme {
-  static const _gopeedreenPrimaryValue = 0xFF79C476;
-  static const _gopeedreen =
-      MaterialColor(_gopeedreenPrimaryValue, <int, Color>{
-    50: Color(0xFFEFF8EF),
-    100: Color(0xFFD7EDD6),
-    200: Color(0xFFBCE2BB),
-    300: Color(0xFFA1D69F),
-    400: Color(0xFF8DCD8B),
-    500: Color(_gopeedreenPrimaryValue),
-    600: Color(0xFF71BE6E),
-    700: Color(0xFF66B663),
-    800: Color(0xFF5CAF59),
-    900: Color(0xFF49A246),
-  });
+  static const defaultAccentColor = 0xFF79C476;
 
-  static const _gopeedreenAccentValue = 0xFFC9FFC7;
-  static const _gopeedreenAccent =
-      MaterialColor(_gopeedreenAccentValue, <int, Color>{
-    100: Color(0xFFFAFFFA),
-    200: Color(_gopeedreenAccentValue),
-    400: Color(0xFF97FF94),
-    700: Color(0xFF7FFF7A),
-  });
+  static MaterialColor _swatch(Color color) {
+    final hsl = HSLColor.fromColor(color);
+    return MaterialColor(color.value, <int, Color>{
+      50: hsl.withLightness(.95).toColor(),
+      100: hsl.withLightness(.88).toColor(),
+      200: hsl.withLightness(.78).toColor(),
+      300: hsl.withLightness(.68).toColor(),
+      400: hsl.withLightness(.58).toColor(),
+      500: color,
+      600: hsl.withLightness(.46).toColor(),
+      700: hsl.withLightness(.38).toColor(),
+      800: hsl.withLightness(.30).toColor(),
+      900: hsl.withLightness(.22).toColor(),
+    });
+  }
 
-  static final _light = ThemeData(
+  static ThemeData light([int accentColor = defaultAccentColor]) {
+    final color = Color(accentColor);
+    final swatch = _swatch(color);
+    final accent = _swatch(
+      HSLColor.fromColor(color).withLightness(.89).toColor(),
+    );
+    final base = ThemeData(
       useMaterial3: false,
       brightness: Brightness.light,
-      primarySwatch: _gopeedreen);
-  static final light = _light.copyWith(
-      colorScheme: _light.colorScheme.copyWith(secondary: _gopeedreenAccent));
+      primarySwatch: swatch,
+    );
+    return base.copyWith(
+      colorScheme: base.colorScheme.copyWith(secondary: accent),
+    );
+  }
 
-  static final _dark = ThemeData(
+  static ThemeData dark([int accentColor = defaultAccentColor]) {
+    final color = Color(accentColor);
+    final swatch = _swatch(color);
+    final accent = _swatch(
+      HSLColor.fromColor(color).withLightness(.35).toColor(),
+    );
+    final base = ThemeData(
       useMaterial3: false,
       brightness: Brightness.dark,
-      primarySwatch: _gopeedreen);
-  static final dark = _dark.copyWith(
-      colorScheme: _dark.colorScheme.copyWith(secondary: _gopeedreenAccent));
+      primarySwatch: swatch,
+    );
+    return base.copyWith(
+      colorScheme: base.colorScheme.copyWith(secondary: accent),
+    );
+  }
 }

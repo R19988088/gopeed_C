@@ -9,11 +9,15 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.bottom,
     this.showTitle = true,
+    this.showBack = false,
+    this.showMenu = true,
   });
 
   final String? title;
   final PreferredSizeWidget? bottom;
   final bool showTitle;
+  final bool showBack;
+  final bool showMenu;
 
   @override
   Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 92);
@@ -25,21 +29,18 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: showTitle ? Text(title ?? 'Gopeed') : null,
       centerTitle: true,
       elevation: bottom == null ? null : 4,
+      leading: showBack
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
+            )
+          : null,
       actions: [
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.more_horiz),
-          onSelected: (route) => Get.rootDelegate.offAndToNamed(route),
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: Routes.EXTENSION,
-              child: Text('extensions'.tr),
-            ),
-            PopupMenuItem(
-              value: Routes.SETTING,
-              child: Text('setting'.tr),
-            ),
-          ],
-        ),
+        if (showMenu)
+          IconButton(
+            icon: const Icon(Icons.more_horiz),
+            onPressed: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
+          ),
       ],
       bottom: bottom,
     );

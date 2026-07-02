@@ -104,6 +104,7 @@ Map<String, dynamic> _$Ed2kConfigToJson(Ed2kConfig instance) =>
 
 ExtraConfig _$ExtraConfigFromJson(Map<String, dynamic> json) => ExtraConfig(
       themeMode: json['themeMode'] as String? ?? '',
+      accentColor: (json['accentColor'] as num?)?.toInt() ?? 0xFF79C476,
       locale: json['locale'] as String? ?? '',
       lastDeleteTaskKeep: json['lastDeleteTaskKeep'] as bool? ?? false,
       defaultDirectDownload: json['defaultDirectDownload'] as bool? ?? false,
@@ -123,6 +124,7 @@ ExtraConfig _$ExtraConfigFromJson(Map<String, dynamic> json) => ExtraConfig(
 Map<String, dynamic> _$ExtraConfigToJson(ExtraConfig instance) =>
     <String, dynamic>{
       'themeMode': instance.themeMode,
+      'accentColor': instance.accentColor,
       'locale': instance.locale,
       'lastDeleteTaskKeep': instance.lastDeleteTaskKeep,
       'defaultDirectDownload': instance.defaultDirectDownload,
