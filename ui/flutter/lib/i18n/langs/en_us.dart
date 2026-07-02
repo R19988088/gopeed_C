@@ -17,6 +17,7 @@ const enUS = {
     'donate': 'Donate',
     'exit': 'Exit',
     'create': 'Create Task',
+    'createClipboard': 'Create Clipboard Task',
     'directDownload': 'Direct Download',
     'advancedOptions': 'Advanced Options',
     'followSettings': 'Follow Settings',

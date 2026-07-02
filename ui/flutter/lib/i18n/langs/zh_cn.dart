@@ -17,6 +17,7 @@ const zhCN = {
     'donate': '打赏',
     'exit': '退出',
     'create': '创建任务',
+    'createClipboard': '新建剪贴板的任务',
     'directDownload': '直接下载',
     'advancedOptions': '高级选项',
     'followSettings': '跟随设置',

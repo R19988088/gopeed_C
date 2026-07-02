@@ -8,10 +8,12 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.title,
     this.bottom,
+    this.showTitle = true,
   });
 
   final String? title;
   final PreferredSizeWidget? bottom;
+  final bool showTitle;
 
   @override
   Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 92);
@@ -20,7 +22,7 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: bottom == null ? 56 : 44,
-      title: Text(title ?? 'Gopeed'),
+      title: showTitle ? Text(title ?? 'Gopeed') : null,
       centerTitle: true,
       elevation: bottom == null ? null : 4,
       actions: [

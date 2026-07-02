@@ -21,6 +21,7 @@ import '../../../../api/api.dart';
 import '../../../../api/model/create_task.dart';
 import '../../../../api/model/downloader_config.dart';
 import '../../../../api/model/install_extension.dart';
+import '../../../../api/model/options.dart';
 import '../../../../api/model/request.dart';
 import '../../../../core/common/start_config.dart';
 import '../../../../core/libgopeed_boot.dart';
@@ -297,6 +298,10 @@ class AppController extends GetxController with WindowListener, TrayListener {
         },
       ),
       MenuItem(
+        label: "createClipboard".tr,
+        onClick: (menuItem) async => _createClipboardTask(),
+      ),
+      MenuItem(
         label: "startAll".tr,
         onClick: (menuItem) async => {continueAllTasks(null)},
       ),
@@ -341,6 +346,31 @@ class AppController extends GetxController with WindowListener, TrayListener {
     }
     await trayManager.setContextMenu(menu);
     trayManager.addListener(this);
+  }
+
+  Future<void> _createClipboardTask() async {
+    final text = (await Clipboard.getData('text/plain'))?.text?.trim();
+    if (text == null || text.isEmpty) {
+      return;
+    }
+    final config = downloaderConfig.value;
+    try {
+      await createTask(CreateTask(
+        req: Request(url: text),
+        opts: Options(
+          path: config.downloadDir,
+          extra: OptsExtraHttp(
+            connections: config.protocolConfig.http.connections,
+            autoTorrent: config.autoTorrent.enable,
+            deleteTorrentAfterDownload: config.autoTorrent.deleteAfterDownload,
+            autoExtract: config.archive.autoExtract,
+            deleteAfterExtract: config.archive.deleteAfterExtract,
+          ).toJson(),
+        ),
+      ));
+    } catch (e) {
+      logger.w("create clipboard task fail", e, StackTrace.current);
+    }
   }
 
   Future<void> _initRpcServer() async {

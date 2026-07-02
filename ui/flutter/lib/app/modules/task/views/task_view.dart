@@ -35,6 +35,7 @@ class TaskView extends GetView<TaskController> {
       child: Scaffold(
         key: controller.scaffoldKey,
         appBar: DesktopHomeAppBar(
+          showTitle: false,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),
             child: Align(

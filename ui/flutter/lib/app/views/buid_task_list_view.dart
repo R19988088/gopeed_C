@@ -518,23 +518,10 @@ class BuildTaskListView extends GetView {
     return ContextMenuRegion(
       contextMenu: contextMenu,
       child: Obx(
-        () => Card(
-            elevation: 0,
-            margin: EdgeInsets.zero,
-            shape: isSelect()
-                ? RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2.0,
-                    ),
-                  )
-                : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                    side: BorderSide(
-                      color: Theme.of(context).dividerColor.withOpacity(0.35),
-                    ),
-                  ),
+        () => Material(
+            color: isSelect()
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.06)
+                : Theme.of(context).cardColor,
             child: InkWell(
               onTap: () {
                 taskController.scaffoldKey.currentState?.openEndDrawer();
@@ -705,9 +692,15 @@ class BuildTaskListView extends GetView {
                         ],
                       );
                     }),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: 32,
+                    endIndent: 32,
+                  ),
                 ],
               ),
-            )).padding(horizontal: 14, top: 6),
+            )),
       ),
     );
   }
