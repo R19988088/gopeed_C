@@ -14,6 +14,7 @@ import '../../../../api/model/store_extension.dart';
 import '../../../../api/model/update_extension_settings.dart';
 import '../../../../util/message.dart';
 import '../../../../util/util.dart';
+import '../../../views/desktop_home_app_bar.dart';
 import '../../../views/icon_button_loading.dart';
 import '../../../views/responsive_builder.dart';
 import '../controllers/extension_controller.dart';
@@ -73,6 +74,7 @@ class ExtensionView extends GetView<ExtensionController> {
     }
 
     return Scaffold(
+      appBar: DesktopHomeAppBar(title: 'extensions'.tr),
       body: SafeArea(
         child: Obx(
           () => RefreshIndicator(
