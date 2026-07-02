@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../routes/app_pages.dart';
 
@@ -20,13 +21,20 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenu;
 
   @override
-  Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 92);
+  Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 104);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: bottom == null ? 56 : 44,
-      title: showTitle ? Text(title ?? 'Gopeed') : null,
+      toolbarHeight: 56,
+      title: showTitle
+          ? DragToMoveArea(
+              child: SizedBox(
+                height: 56,
+                child: Center(child: Text(title ?? 'Gopeed')),
+              ),
+            )
+          : null,
       centerTitle: true,
       elevation: bottom == null ? null : 4,
       leading: showBack
@@ -37,9 +45,25 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       actions: [
         if (showMenu)
-          IconButton(
-            icon: const Icon(Icons.more_horiz),
-            onPressed: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
+          Padding(
+            padding: const EdgeInsets.only(right: 14),
+            child: Center(
+              child: InkResponse(
+                radius: 28,
+                onTap: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  child: const Icon(Icons.more_horiz),
+                ),
+              ),
+            ),
           ),
       ],
       bottom: bottom,

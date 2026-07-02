@@ -70,11 +70,15 @@ Future<void> init(StartupArgs args) async {
     // Check if menubar mode is enabled (only for macOS)
     final runAsMenubarApp =
         Util.isMacos() && Database.instance.getRunAsMenubarApp();
+    final titleBarStyle = Util.isMacos() || Util.isWindows()
+        ? TitleBarStyle.hidden
+        : TitleBarStyle.normal;
 
     final windowOptions = WindowOptions(
       size: Size(windowState?.width ?? 800, windowState?.height ?? 600),
       center: true,
       skipTaskbar: runAsMenubarApp,
+      titleBarStyle: titleBarStyle,
     );
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setPreventClose(true);
