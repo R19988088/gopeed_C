@@ -300,12 +300,21 @@ jobs:
           if [[ "${{ matrix.channel }}" == "amd64" ]]; then
             mv dist/Gopeed-v$VERSION-macos.dmg dist/Gopeed-v$VERSION-macos-amd64.dmg
           fi
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
+      - name: Find DMG
+        id: find_dmg
+        run: |
+          set -euo pipefail
+          dmg=$(find ui/flutter/build/macos/Build/Products/Release/dist -name '*.dmg' -type f | sort | tail -n 1)
+          test -n "$dmg"
+          echo "dmg_path=$dmg" >> "$GITHUB_OUTPUT"
+          echo "dmg_name=$(basename "$dmg")" >> "$GITHUB_OUTPUT"
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v7
         with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ui/flutter/build/macos/Build/Products/Release/dist/*
-          overwrite: true
+          archive: false
+          name: ${{ steps.find_dmg.outputs.dmg_name }}
+          path: ${{ steps.find_dmg.outputs.dmg_path }}
+          if-no-files-found: error
   build-linux:
     if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'linux' }}
     runs-on: ${{ matrix.os }}
