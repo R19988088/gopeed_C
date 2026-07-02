@@ -205,16 +205,14 @@ jobs:
         env:
           VERSION: ${{ needs.get-release.outputs.version }}
         run: |
-          go build -tags nosqlite -ldflags="-w -s -X github.com/GopeedLab/gopeed/pkg/base.Version=$VERSION" -buildmode=c-shared -o libgopeed.dylib github.com/GopeedLab/gopeed/bind/desktop
-          go build -ldflags="-w -s" github.com/GopeedLab/gopeed/cmd/host
-          go build -ldflags="-w -s" github.com/GopeedLab/gopeed/cmd/updater
-      - uses: actions/upload-artifact@v4
+          mkdir -p ui/flutter/lib-amd64
+          go build -tags nosqlite -ldflags="-w -s -X github.com/GopeedLab/gopeed/pkg/base.Version=$VERSION" -buildmode=c-shared -o ui/flutter/lib-amd64/libgopeed.dylib github.com/GopeedLab/gopeed/bind/desktop
+          go build -ldflags="-w -s" -o ui/flutter/lib-amd64/host github.com/GopeedLab/gopeed/cmd/host
+          go build -ldflags="-w -s" -o ui/flutter/lib-amd64/updater github.com/GopeedLab/gopeed/cmd/updater
+      - uses: actions/cache/save@v4
         with:
-          name: macos-amd64-lib
-          path: |
-            libgopeed.dylib
-            host
-            updater
+          path: ui/flutter/lib-amd64
+          key: macos-amd64-lib-${{ github.run_id }}
   build-macos:
     if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos' }}
     runs-on: macos-latest
@@ -237,10 +235,11 @@ jobs:
         run: |
           python3 -m pip install setuptools --break-system-packages
           npm install -g appdmg
-      - uses: actions/download-artifact@v4
+      - uses: actions/cache/restore@v4
         with:
-          name: macos-amd64-lib
           path: ui/flutter/lib-amd64
+          key: macos-amd64-lib-${{ github.run_id }}
+          fail-on-cache-miss: true
       - if: ${{ matrix.channel == 'arm64' }}
         name: Build Arm64 Libraries
         run: |
