@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../routes/app_pages.dart';
 
@@ -42,10 +41,6 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: bottom,
     );
 
-    if (!GetPlatform.isDesktop) {
-      return appBar;
-    }
-
-    return DragToMoveArea(child: appBar);
+    return appBar;
   }
 }
