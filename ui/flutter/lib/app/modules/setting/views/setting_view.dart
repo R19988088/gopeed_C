@@ -29,6 +29,7 @@ import '../../../../util/util.dart';
 import '../../../routes/app_pages.dart';
 import '../../../views/check_list_view.dart';
 import '../../../views/desktop_home_app_bar.dart';
+import '../../../views/desktop_page_switch.dart';
 import '../../../views/directory_selector.dart';
 import '../../../views/open_in_new.dart';
 import '../../../views/outlined_button_loading.dart';
@@ -1735,7 +1736,7 @@ class SettingView extends GetView<SettingController> {
           initialIndex: 1,
           child: Scaffold(
           appBar: DesktopHomeAppBar(
-            showBack: true,
+            showBack: false,
             showMenu: false,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(48),
@@ -1873,37 +1874,15 @@ class SettingView extends GetView<SettingController> {
   }
 
   Widget _buildPageTabs(int index) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        width: 360,
-        height: 42,
-        margin: const EdgeInsets.only(bottom: 6),
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF3D7E3A)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: TabBar(
-          indicator: const BoxDecoration(color: Color(0xFF3D7E3A)),
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          labelStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
-          tabs: [
-            Tab(text: 'extensions'.tr),
-            Tab(text: 'setting'.tr),
-          ],
-          onTap: (value) {
-            if (value == index) return;
-            Get.rootDelegate.offAndToNamed(
-              value == 0 ? Routes.EXTENSION : Routes.SETTING,
-            );
-          },
-        ),
-      ),
+    return DesktopPageSwitch(
+      tabs: ['extensions'.tr, 'setting'.tr],
+      onAction: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
+      onTap: (value) {
+        if (value == index) return;
+        Get.rootDelegate.offAndToNamed(
+          value == 0 ? Routes.EXTENSION : Routes.SETTING,
+        );
+      },
     );
   }
 

@@ -11,7 +11,7 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.showTitle = true,
     this.showBack = false,
-    this.showMenu = true,
+    this.showMenu = false,
   });
 
   final String? title;
