@@ -192,6 +192,13 @@ jobs:
           upload_url: ${{ needs.get-release.outputs.upload_url }}
           asset_path: ui/flutter/build/windows/Output/*
           overwrite: true
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          name: Gopeed-windows-${{ matrix.arch }}
+          path: ui/flutter/build/windows/Output/*
+          if-no-files-found: error
   build-macos-amd64-lib:
     if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos' }}
     runs-on: macos-15-intel
