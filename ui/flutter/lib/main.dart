@@ -75,6 +75,8 @@ Future<void> init(StartupArgs args) async {
       size: Size(windowState?.width ?? 800, windowState?.height ?? 600),
       center: true,
       skipTaskbar: runAsMenubarApp,
+      titleBarStyle:
+          Util.isMacos() ? TitleBarStyle.hidden : TitleBarStyle.normal,
     );
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setPreventClose(true);

@@ -28,7 +28,7 @@ class HomeView extends GetView<HomeController> {
         body: Row(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              !ResponsiveBuilder.isNarrow(context)
+              !ResponsiveBuilder.isNarrow(context) && !GetPlatform.isDesktop
                   ? NavigationRail(
                       extended: true,
                       labelType: NavigationRailLabelType.none,

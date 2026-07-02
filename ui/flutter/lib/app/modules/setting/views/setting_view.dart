@@ -26,6 +26,7 @@ import '../../../../util/scheme_register/scheme_register.dart';
 import '../../../../util/updater.dart';
 import '../../../../util/util.dart';
 import '../../../views/check_list_view.dart';
+import '../../../views/desktop_home_app_bar.dart';
 import '../../../views/directory_selector.dart';
 import '../../../views/open_in_new.dart';
 import '../../../views/outlined_button_loading.dart';
@@ -1705,33 +1706,18 @@ class SettingView extends GetView<SettingController> {
         onTap: () {
           controller.clearTap();
         },
-        child: DefaultTabController(
-          length: 2,
-          child: Scaffold(
-              appBar: PreferredSize(
-                  preferredSize: const Size.fromHeight(56),
-                  child: AppBar(
-                    bottom: TabBar(
-                      tabs: [
-                        Tab(
-                          text: 'basic'.tr,
-                        ),
-                        Tab(
-                          text: 'advanced'.tr,
-                        ),
-                      ],
-                    ),
-                  )),
-              body: TabBarView(
-                children: [
-                  SingleChildScrollView(
+        child: Scaffold(
+          appBar: DesktopHomeAppBar(title: 'setting'.tr),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _addPadding([
+                Text('basic'.tr,
+                    style: Theme.of(context).textTheme.titleMedium),
+                Text('general'.tr),
+                Card(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _addPadding([
-                        Text('general'.tr),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                  children: _addDivider([
                             buildDownloadDir(),
                             buildDownloadCategories(),
                             buildMaxRunning(),
@@ -1749,11 +1735,11 @@ class SettingView extends GetView<SettingController> {
                             buildMenubarMode(),
                             buildDesktopNotification(),
                           ]),
-                        )),
-                        Text('archives'.tr),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                Text('archives'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildAutoExtract(),
                             Obx(() => Visibility(
                                   visible: appController.downloaderConfig.value
@@ -1761,110 +1747,90 @@ class SettingView extends GetView<SettingController> {
                                   child: buildDeleteAfterExtract(),
                                 )),
                           ]),
-                        )),
-                        const Text('HTTP'),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                const Text('HTTP'),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildHttpUa(),
                             buildHttpConnections(),
                             buildHttpUseServerCtime(),
                           ]),
-                        )),
-                        const Text('BitTorrent'),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                const Text('BitTorrent'),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildBtListenPort(),
                             buildBtTrackerSubscribeUrls(),
                             buildBtTrackers(),
                             buildBtSeedConfig(),
                             buildBtDefaultClientConfig(),
                           ]),
-                        )),
-                        Text('ed2k'.tr),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                Text('ed2k'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildEd2kListenPort(),
                             buildEd2kUdpPort(),
                             buildEd2kServerAddr(),
                             buildEd2kServerMet(),
                             buildEd2kNodesDat(),
                           ]),
-                        )),
-                        Text('ui'.tr),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                Text('ui'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildTheme(),
                             buildLocale(),
                           ]),
-                        )),
-                        Text('about'.tr),
-                        Card(
-                            child: Column(
-                          children: _addDivider([
+                )),
+                Text('about'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                             buildHomepage(),
                             buildVersion(),
                             buildAutoCheckUpdate(),
                             if (Config.isConfigured) buildAnalyticsEnabled(),
                             buildThanks(),
                           ]),
-                        )),
-                      ]),
-                    ),
-                  ),
-                  // Column(
-                  //   children: [
-                  //     Card(
-                  //         child: Column(
-                  //       children: [
-                  //         ..._addDivider([
-                  //           buildApiProtocol(),
-                  //           Util.isDesktop() && startCfg.value.network == 'tcp'
-                  //               ? buildApiToken()
-                  //               : null,
-                  //         ]),
-                  //       ],
-                  //     )),
-                  //   ],
-                  // ),
-                  SingleChildScrollView(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _addPadding([
-                      Text('network'.tr),
-                      Card(
-                          child: Column(
-                        children: _addDivider([
+                )),
+                const Divider(height: 32),
+                Text('advanced'.tr,
+                    style: Theme.of(context).textTheme.titleMedium),
+                Text('network'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                           buildProxy(),
                           buildGithubMirror(),
                         ]),
-                      )),
-                      const Text('API'),
-                      Card(
-                          child: Column(
-                        children: _addDivider([
+                )),
+                const Text('API'),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                           buildApiProtocol(),
                           Util.isDesktop() && startCfg.value.network == 'tcp'
                               ? buildApiToken()
                               : null,
                         ]),
-                      )),
-                      Text('developer'.tr),
-                      Card(
-                          child: Column(
-                        children: _addDivider([
+                )),
+                Text('developer'.tr),
+                Card(
+                    child: Column(
+                  children: _addDivider([
                           buildWebhook(),
                           if (Util.isDesktop()) buildScript(),
                           buildLogsDir(),
                         ]),
-                      )),
-                    ]),
-                  ))
-                ],
-              ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16)),
+                )),
+              ]),
+            ),
+          ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16),
         ),
       );
     });
