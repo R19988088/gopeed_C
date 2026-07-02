@@ -37,7 +37,6 @@ class CreateView extends GetView<CreateController> {
   final _renameController = TextEditingController();
   final _connectionsController = TextEditingController();
   final _pathController = TextEditingController();
-  final _confirmController = RoundedLoadingButtonController();
   final _proxyIpController = TextEditingController();
   final _proxyPortController = TextEditingController();
   final _proxyUsrController = TextEditingController();
@@ -175,6 +174,19 @@ class CreateView extends GetView<CreateController> {
         // actions: [],
         title: Text('create'.tr),
       ),
+      floatingActionButton: Obx(() {
+        final confirming = controller.isConfirming.value;
+        return FloatingActionButton.extended(
+          onPressed: confirming ? null : _doConfirm,
+          label: confirming
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text('confirm'.tr),
+        );
+      }),
       body: DropTarget(
         onDragDone: (details) async {
           if (!Util.isWeb()) {
@@ -772,15 +784,6 @@ class CreateView extends GetView<CreateController> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              width: 150,
-                              child: RoundedLoadingButton(
-                                color: Get.theme.colorScheme.secondary,
-                                onPressed: _doConfirm,
-                                controller: _confirmController,
-                                child: Text('confirm'.tr),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -832,7 +835,6 @@ class CreateView extends GetView<CreateController> {
     }
     controller.isConfirming.value = true;
     try {
-      _confirmController.start();
       if (_confirmFormKey.currentState!.validate()) {
         final isWebFileChosen =
             Util.isWeb() && controller.fileDataUri.isNotEmpty;
@@ -910,7 +912,6 @@ class CreateView extends GetView<CreateController> {
     } catch (e) {
       showErrorMessage(e);
     } finally {
-      _confirmController.reset();
       controller.isConfirming.value = false;
     }
   }

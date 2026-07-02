@@ -519,16 +519,22 @@ class BuildTaskListView extends GetView {
       contextMenu: contextMenu,
       child: Obx(
         () => Card(
-            elevation: 4.0,
+            elevation: 0,
+            margin: EdgeInsets.zero,
             shape: isSelect()
                 ? RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(6.0),
                     side: BorderSide(
                       color: Theme.of(context).colorScheme.primary,
                       width: 2.0,
                     ),
                   )
-                : null,
+                : RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                    side: BorderSide(
+                      color: Theme.of(context).dividerColor.withOpacity(0.35),
+                    ),
+                  ),
             child: InkWell(
               onTap: () {
                 taskController.scaffoldKey.currentState?.openEndDrawer();
@@ -540,86 +546,109 @@ class BuildTaskListView extends GetView {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(
-                      title: Row(
-                        children: [
-                          Expanded(child: Text(task.name)),
-                          // Show pending update indicator
-                          if (appController.pendingUpdateTask.value?.id ==
-                              task.id)
-                            Tooltip(
-                              message: 'updateUrlListeningTip'.tr,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Icon(Icons.hearing,
-                                    size: 16,
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                              ),
-                            ),
-                        ],
-                      ),
-                      leading: Icon(
-                        fileIcon(task.name,
-                            isFolder: isFolderTask(),
-                            isBitTorrent: task.protocol == Protocol.bt),
-                      )),
-                  Row(
-                    children: [
-                      // Left side: Progress text + Percentage
-                      Expanded(
-                          child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              getProgressText(),
-                              style: Get.textTheme.bodyLarge
-                                  ?.copyWith(color: Get.theme.disabledColor),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 14, 16, 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 56,
+                          child: Icon(
+                            fileIcon(task.name,
+                                isFolder: isFolderTask(),
+                                isBitTorrent: task.protocol == Protocol.bt),
+                            size: 34,
                           ),
-                          // Hide percentage on mobile
-                          if (!Util.isMobile() &&
-                              getPercentText().isNotEmpty) ...[
-                            const SizedBox(width: 4),
-                            Text(
-                              getPercentText(),
-                              style: Get.textTheme.bodyLarge
-                                  ?.copyWith(color: Get.theme.disabledColor),
-                            ),
-                          ],
-                        ],
-                      ).padding(left: 18)),
-                      // Right side: ETA + Speed + Actions
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Only show ETA on wider screens
-                          if (!Util.isMobile() && getEtaText().isNotEmpty) ...[
-                            Text(
-                              getEtaText(),
-                              style: Get.textTheme.titleSmall,
-                            ),
-                            Text(
-                              " | ",
-                              style: Get.textTheme.titleSmall?.copyWith(
-                                color: Get.theme.disabledColor,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ).padding(horizontal: 4),
-                          ],
-                          Text("${Util.fmtByte(task.progress.speed)}/s",
-                              style: Get.textTheme.titleSmall),
-                          ...buildActions()
-                        ],
-                      ),
-                    ],
-                  ),
-                  isDone()
-                      ? Container()
-                      : LinearProgressIndicator(
-                          value: getProgress(),
                         ),
+                        const SizedBox(width: 24),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      task.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (appController.pendingUpdateTask.value
+                                          ?.id ==
+                                      task.id)
+                                    Tooltip(
+                                      message: 'updateUrlListeningTip'.tr,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8),
+                                        child: Icon(
+                                          Icons.hearing,
+                                          size: 16,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      getProgressText(),
+                                      style: Get.textTheme.bodyLarge?.copyWith(
+                                          color: Get.theme.disabledColor),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (!Util.isMobile() &&
+                                      getPercentText().isNotEmpty) ...[
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      getPercentText(),
+                                      style: Get.textTheme.bodyLarge?.copyWith(
+                                          color: Get.theme.disabledColor),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (!Util.isMobile() &&
+                                getEtaText().isNotEmpty) ...[
+                              Text(
+                                getEtaText(),
+                                style: Get.textTheme.titleSmall,
+                              ),
+                              Text(
+                                " | ",
+                                style: Get.textTheme.titleSmall?.copyWith(
+                                  color: Get.theme.disabledColor,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ).padding(horizontal: 4),
+                            ],
+                            Text("${Util.fmtByte(task.progress.speed)}/s",
+                                style: Get.textTheme.titleSmall),
+                            ...buildActions()
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!isDone())
+                    LinearProgressIndicator(
+                      value: getProgress(),
+                      minHeight: 2,
+                    ),
                   // Extraction status row
                   if (task.progress.extractStatus != ExtractStatus.none)
                     Builder(builder: (context) {
@@ -663,7 +692,7 @@ class BuildTaskListView extends GetView {
                                 ).padding(left: 18),
                               ),
                             ],
-                          ).padding(top: 4, bottom: 8),
+                          ).padding(left: 104, top: 4, bottom: 8),
                           // Extraction progress bar
                           if (isExtracting)
                             LinearProgressIndicator(
@@ -678,7 +707,7 @@ class BuildTaskListView extends GetView {
                     }),
                 ],
               ),
-            )).padding(horizontal: 14, top: 8),
+            )).padding(horizontal: 14, top: 6),
       ),
     );
   }

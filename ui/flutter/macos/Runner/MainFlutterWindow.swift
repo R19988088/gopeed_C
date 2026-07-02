@@ -12,6 +12,14 @@ class MainFlutterWindow: NSWindow {
     RegisterGeneratedPlugins(registry: flutterViewController)
 
     super.awakeFromNib()
+
+    titlebarAppearsTransparent = true
+    backgroundColor = NSColor(
+      calibratedRed: 0.475,
+      green: 0.769,
+      blue: 0.463,
+      alpha: 1.0
+    )
   }
 
   override public func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
