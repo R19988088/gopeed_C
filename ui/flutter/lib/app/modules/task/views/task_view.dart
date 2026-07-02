@@ -8,7 +8,6 @@ import '../../../../util/file_explorer.dart';
 import '../../../../util/util.dart';
 import '../../../routes/app_pages.dart';
 import '../../../views/copy_button.dart';
-import '../../../views/desktop_home_app_bar.dart';
 import '../controllers/task_controller.dart';
 import '../controllers/task_downloaded_controller.dart';
 import '../controllers/task_downloading_controller.dart';
@@ -34,32 +33,39 @@ class TaskView extends GetView<TaskController> {
       length: 2,
       child: Scaffold(
         key: controller.scaffoldKey,
-        appBar: DesktopHomeAppBar(
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'downloading'.tr),
-              Tab(text: 'downloaded'.tr),
-            ],
-            onTap: (index) {
-              if (controller.tabIndex.value != index) {
-                controller.tabIndex.value = index;
-                final downloadingController =
-                    Get.find<TaskDownloadingController>();
-                final downloadedController = Get.find<TaskDownloadedController>();
-                switch (index) {
-                  case 0:
-                    downloadingController.start();
-                    downloadedController.stop();
-                    break;
-                  case 1:
-                    downloadingController.stop();
-                    downloadedController.start();
-                    break;
-                }
-              }
-            },
-          ),
-        ),
+        appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(56),
+            child: AppBar(
+              bottom: TabBar(
+                tabs: const [
+                  Tab(
+                    icon: Icon(Icons.file_download),
+                  ),
+                  Tab(
+                    icon: Icon(Icons.done),
+                  ),
+                ],
+                onTap: (index) {
+                  if (controller.tabIndex.value != index) {
+                    controller.tabIndex.value = index;
+                    final downloadingController =
+                        Get.find<TaskDownloadingController>();
+                    final downloadedController =
+                        Get.find<TaskDownloadedController>();
+                    switch (index) {
+                      case 0:
+                        downloadingController.start();
+                        downloadedController.stop();
+                        break;
+                      case 1:
+                        downloadingController.stop();
+                        downloadedController.start();
+                        break;
+                    }
+                  }
+                },
+              ),
+            )),
         body: const TabBarView(
           children: [
             TaskDownloadingView(),
