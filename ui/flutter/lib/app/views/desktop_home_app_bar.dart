@@ -14,14 +14,15 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
+  Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 92);
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
+    return AppBar(
+      toolbarHeight: bottom == null ? 56 : 44,
       title: Text(title ?? 'Gopeed'),
       centerTitle: true,
+      elevation: bottom == null ? null : 4,
       actions: [
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_horiz),
@@ -40,7 +41,5 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
       bottom: bottom,
     );
-
-    return appBar;
   }
 }

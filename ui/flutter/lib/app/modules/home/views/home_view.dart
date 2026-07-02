@@ -82,7 +82,8 @@ class HomeView extends GetView<HomeController> {
                 // },
               ))
             ]),
-        bottomNavigationBar: ResponsiveBuilder.isNarrow(context)
+        bottomNavigationBar: ResponsiveBuilder.isNarrow(context) &&
+                !GetPlatform.isDesktop
             ? BottomNavigationBar(
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
