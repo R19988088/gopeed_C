@@ -14,15 +14,6 @@ class DesktopPageSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFF3D7E3A);
-    const shadow = [
-      BoxShadow(
-        color: Color(0x33000000),
-        blurRadius: 5,
-        offset: Offset(0, 2),
-      ),
-    ];
-
     return Align(
       alignment: Alignment.topCenter,
       child: Row(
@@ -33,13 +24,12 @@ class DesktopPageSwitch extends StatelessWidget {
             height: 42,
             margin: const EdgeInsets.only(bottom: 6),
             decoration: BoxDecoration(
-              border: Border.all(color: borderColor, width: 1.5),
+              border: Border.all(color: const Color(0xFF3D7E3A)),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: shadow,
             ),
             clipBehavior: Clip.antiAlias,
             child: TabBar(
-              indicator: const BoxDecoration(color: borderColor),
+              indicator: const BoxDecoration(color: Color(0xFF3D7E3A)),
               labelColor: Colors.white,
               unselectedLabelColor: Colors.white,
               labelStyle: const TextStyle(
@@ -53,14 +43,9 @@ class DesktopPageSwitch extends StatelessWidget {
           const SizedBox(width: 8),
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: Container(
+            child: SizedBox(
               width: 42,
               height: 42,
-              decoration: BoxDecoration(
-                border: Border.all(color: borderColor, width: 1.5),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: shadow,
-              ),
               child: IconButton(
                 icon: const Icon(Icons.more_horiz),
                 onPressed: onAction,
