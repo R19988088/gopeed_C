@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class GopeedTheme {
   static const defaultAccentColor = 0xFF79C476;
+  static const standardFontSize = 13.0;
 
   static MaterialColor _swatch(Color color) {
     final hsl = HSLColor.fromColor(color);
@@ -17,6 +18,31 @@ class GopeedTheme {
       800: hsl.withLightness(.30).toColor(),
       900: hsl.withLightness(.22).toColor(),
     });
+  }
+
+  static TextStyle? _size(TextStyle? style) =>
+      style?.copyWith(fontSize: standardFontSize);
+
+  static TextTheme _standardTextTheme(TextTheme textTheme) {
+    return textTheme.copyWith(
+      bodyLarge: _size(textTheme.bodyLarge),
+      bodyMedium: _size(textTheme.bodyMedium),
+      bodySmall: _size(textTheme.bodySmall),
+      labelLarge: _size(textTheme.labelLarge),
+      labelMedium: _size(textTheme.labelMedium),
+      labelSmall: _size(textTheme.labelSmall),
+    );
+  }
+
+  static InputDecorationTheme _inputDecorationTheme(ThemeData base) {
+    return base.inputDecorationTheme.copyWith(
+      labelStyle: _size(base.inputDecorationTheme.labelStyle) ??
+          TextStyle(color: base.hintColor, fontSize: standardFontSize),
+      floatingLabelStyle: _size(base.inputDecorationTheme.floatingLabelStyle),
+      hintStyle: _size(base.inputDecorationTheme.hintStyle),
+      helperStyle: _size(base.inputDecorationTheme.helperStyle),
+      errorStyle: _size(base.inputDecorationTheme.errorStyle),
+    );
   }
 
   static ThemeData light([
@@ -38,6 +64,9 @@ class GopeedTheme {
         secondary: accent,
         tertiary: Color(tabActiveColor),
       ),
+      inputDecorationTheme: _inputDecorationTheme(base),
+      primaryTextTheme: _standardTextTheme(base.primaryTextTheme),
+      textTheme: _standardTextTheme(base.textTheme),
     );
   }
 
@@ -60,6 +89,9 @@ class GopeedTheme {
         secondary: accent,
         tertiary: Color(tabActiveColor),
       ),
+      inputDecorationTheme: _inputDecorationTheme(base),
+      primaryTextTheme: _standardTextTheme(base.primaryTextTheme),
+      textTheme: _standardTextTheme(base.textTheme),
     );
   }
 }

@@ -1,20 +1,7 @@
 name: release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "bind/**"
-      - "cmd/**"
-      - "internal/**"
-      - "pkg/**"
-      - "ui/**"
-      - ".github/workflows/release.yml"
-      - ".github/release-drafter.yml"
-      - "go.mod"
-      - "go.sum"
-      - "Dockerfile"
+  workflow_dispatch:
 
 env:
   GO_VERSION: "1.25"

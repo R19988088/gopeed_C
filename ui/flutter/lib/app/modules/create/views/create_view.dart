@@ -24,6 +24,7 @@ import '../../../../util/message.dart';
 import '../../../../util/util.dart';
 import '../../../routes/app_pages.dart';
 import '../../../views/compact_checkbox.dart';
+import '../../../views/desktop_home_app_bar.dart';
 import '../../../views/directory_selector.dart';
 import '../../../views/file_tree_view.dart';
 import '../../app/controllers/app_controller.dart';
@@ -167,13 +168,7 @@ class CreateView extends GetView<CreateController> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Get.rootDelegate.offNamed(Routes.TASK)),
-        // actions: [],
-        title: Text('create'.tr),
-      ),
+      appBar: _buildAppBar(),
       floatingActionButton: Obx(() {
         final confirming = controller.isConfirming.value;
         return FloatingActionButton.extended(
@@ -798,6 +793,26 @@ class CreateView extends GetView<CreateController> {
     );
   }
 
+  PreferredSizeWidget _buildAppBar() {
+    if (!Util.isDesktop()) {
+      return AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.rootDelegate.offNamed(Routes.TASK),
+        ),
+        title: Text('create'.tr),
+      );
+    }
+    return DesktopHomeAppBar(
+      title: 'create'.tr,
+      showBack: true,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(48),
+        child: SizedBox(height: 48),
+      ),
+    );
+  }
+
   // parse protocol from url
   parseProtocol(String url) {
     final uppercaseUrl = url.toUpperCase();
@@ -1172,7 +1187,7 @@ class CreateView extends GetView<CreateController> {
             'selectCategory'.tr,
             style: TextStyle(
               color: Get.theme.hintColor,
-              fontSize: 12,
+              fontSize: 13,
             ),
           ),
           const SizedBox(width: 8),
@@ -1190,14 +1205,14 @@ class CreateView extends GetView<CreateController> {
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
+                          horizontal: 18,
+                          vertical: 6,
                         ),
                         minimumSize: Size.zero,
                       ),
                       child: Text(
                         getCategoryDisplayName(category),
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 13),
                       ),
                     ),
                   );
