@@ -29,10 +29,16 @@ jobs:
       upload_url: ${{ steps.get-release.outputs.upload_url }}
 
     steps:
-      - uses: monkeyWie/get-latest-release@v2.1
+      - name: Get latest release
         id: get-release
-        with:
-          myToken: ${{ github.token }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          release="$(gh api "repos/${{ github.repository }}/releases/latest")"
+          tag="$(jq -r '.tag_name' <<<"$release")"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          echo "upload_url=$(jq -r '.upload_url' <<<"$release")" >> "$GITHUB_OUTPUT"
 
   build-windows:
     if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'desktop' || github.event.inputs.platform == 'windows' }}
