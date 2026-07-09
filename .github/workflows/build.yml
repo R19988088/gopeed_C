@@ -36,7 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           release="$(gh api "repos/${{ github.repository }}/releases" \
-            --jq 'map(select(.tag_name == "v0.1.0"))[0] // .[0] // empty')"
+            --jq 'map(select(.tag_name == "v0.1.0"))[0] // .[0] // empty | {tag_name, upload_url}')"
           if [[ -z "$release" ]]; then
             release="$(gh api "repos/${{ github.repository }}/releases" \
               -X POST \
