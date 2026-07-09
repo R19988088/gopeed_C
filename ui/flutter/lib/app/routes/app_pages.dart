@@ -74,7 +74,7 @@ class AppPages {
           ),
           GetPage(
             name: _Paths.CREATE,
-            transition: Transition.downToUp,
+            transition: Transition.fadeIn,
             // preventDuplicates: true,
             page: () => CreateView(),
             binding: CreateBinding(),
