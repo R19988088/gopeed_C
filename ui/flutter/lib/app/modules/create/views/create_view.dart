@@ -749,45 +749,31 @@ class CreateView extends GetView<CreateController> {
                         ),
                       ]),
                     ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Column(
-                          children: [
-                            Row(
+                    if (!Util.isDesktop())
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: TextButton(
+                            onPressed: () {
+                              controller.showAdvanced.value =
+                                  !controller.showAdvanced.value;
+                            },
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                CompactCheckbox(
-                                    label: 'directDownload'.tr,
-                                    value: controller.directDownload.value,
-                                    onChanged: (bool? value) {
-                                      controller.directDownload.value =
-                                          value ?? false;
-                                    }),
-                                if (!Util.isDesktop())
-                                  TextButton(
-                                    onPressed: () {
-                                      controller.showAdvanced.value =
-                                          !controller.showAdvanced.value;
-                                    },
-                                    child: Row(children: [
-                                      Obx(() => Checkbox(
-                                            value:
-                                                controller.showAdvanced.value,
-                                            onChanged: (bool? value) {
-                                              controller.showAdvanced.value =
-                                                  value ?? false;
-                                            },
-                                          )),
-                                      Text('advancedOptions'.tr),
-                                    ]),
-                                  ),
+                                Obx(() => Checkbox(
+                                      value: controller.showAdvanced.value,
+                                      onChanged: (bool? value) {
+                                        controller.showAdvanced.value =
+                                            value ?? false;
+                                      },
+                                    )),
+                                Text('advancedOptions'.tr),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -917,6 +903,7 @@ class CreateView extends GetView<CreateController> {
         2. Muli line urls
         */
         final isMultiLine = urls.length > 1;
+        controller.directDownload.value = true;
         final isDirect = controller.directDownload.value || isMultiLine;
         final opt = Options(
           name: isMultiLine ? "" : _renameController.text,
@@ -1232,7 +1219,7 @@ class CreateView extends GetView<CreateController> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 18,
-                          vertical: 6,
+                          vertical: 10,
                         ),
                         minimumSize: Size.zero,
                       ),

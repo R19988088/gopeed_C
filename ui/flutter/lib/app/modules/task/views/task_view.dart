@@ -66,11 +66,14 @@ class TaskView extends GetView<TaskController> {
             ),
           ),
         ),
-        body: const TabBarView(
-          children: [
-            TaskDownloadingView(),
-            TaskDownloadedView(),
-          ],
+        body: Obx(
+          () => IndexedStack(
+            index: controller.tabIndex.value,
+            children: const [
+              TaskDownloadingView(),
+              TaskDownloadedView(),
+            ],
+          ),
         ),
         endDrawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll
