@@ -37,11 +37,11 @@ class TaskView extends GetView<TaskController> {
         key: controller.scaffoldKey,
         appBar: DesktopHomeAppBar(
           showMenu: false,
+          onMenuTap: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),
             child: DesktopPageSwitch(
               tabs: ['downloading'.tr, 'downloaded'.tr],
-              onAction: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
               onTap: (index) {
                 if (controller.tabIndex.value == index) return;
                 controller.tabIndex.value = index;

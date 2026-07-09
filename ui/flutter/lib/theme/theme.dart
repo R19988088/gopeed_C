@@ -35,8 +35,8 @@ class GopeedTheme {
     );
     return base.copyWith(
       colorScheme: base.colorScheme.copyWith(
-        primary: Color(tabActiveColor),
         secondary: accent,
+        tertiary: Color(tabActiveColor),
       ),
     );
   }
@@ -57,8 +57,8 @@ class GopeedTheme {
     );
     return base.copyWith(
       colorScheme: base.colorScheme.copyWith(
-        primary: Color(tabActiveColor),
         secondary: accent,
+        tertiary: Color(tabActiveColor),
       ),
     );
   }

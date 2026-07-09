@@ -12,6 +12,7 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showTitle = true,
     this.showBack = false,
     this.showMenu = false,
+    this.onMenuTap,
   });
 
   final String? title;
@@ -19,6 +20,7 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showTitle;
   final bool showBack;
   final bool showMenu;
+  final VoidCallback? onMenuTap;
 
   @override
   Size get preferredSize => Size.fromHeight(bottom == null ? 56 : 104);
@@ -44,25 +46,15 @@ class DesktopHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
       actions: [
-        if (showMenu)
+        if (showMenu || onMenuTap != null)
           Padding(
             padding: const EdgeInsets.only(top: 4, right: 9),
             child: Align(
               alignment: Alignment.topCenter,
-              child: InkResponse(
-                radius: 28,
-                onTap: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  child: const Icon(Icons.more_horiz),
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed:
+                    onMenuTap ?? () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
               ),
             ),
           ),

@@ -82,6 +82,7 @@ class ExtensionView extends GetView<ExtensionController> {
       appBar: DesktopHomeAppBar(
         showBack: false,
         showMenu: false,
+        onMenuTap: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: _buildPageTabs(0),
@@ -151,7 +152,6 @@ class ExtensionView extends GetView<ExtensionController> {
   Widget _buildPageTabs(int index) {
     return DesktopPageSwitch(
       tabs: ['extensions'.tr, 'setting'.tr],
-      onAction: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
       onTap: (value) {
         if (value == index) return;
         Get.rootDelegate.offAndToNamed(

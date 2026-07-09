@@ -1758,6 +1758,7 @@ class SettingView extends GetView<SettingController> {
           appBar: DesktopHomeAppBar(
             showBack: false,
             showMenu: false,
+            onMenuTap: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(48),
               child: _buildPageTabs(1),
@@ -1896,7 +1897,6 @@ class SettingView extends GetView<SettingController> {
   Widget _buildPageTabs(int index) {
     return DesktopPageSwitch(
       tabs: ['extensions'.tr, 'setting'.tr],
-      onAction: () => Get.rootDelegate.offAndToNamed(Routes.TASK),
       onTap: (value) {
         if (value == index) return;
         Get.rootDelegate.offAndToNamed(
