@@ -35,15 +35,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          release="$(gh release view --json tagName,uploadUrl 2>/dev/null || true)"
+          release="$(gh api "repos/${{ github.repository }}/releases" \
+            --jq 'map(select(.tag_name == "v0.1.0"))[0] // .[0] // empty')"
           if [[ -z "$release" ]]; then
-            gh release view v0.1.0 --json tagName >/dev/null 2>&1 || \
-              gh release create v0.1.0 --title "v0.1.0" --notes "" --draft
-            release="$(gh release view v0.1.0 --json tagName,uploadUrl)"
+            release="$(gh api "repos/${{ github.repository }}/releases" \
+              -X POST \
+              -f tag_name=v0.1.0 \
+              -f name=v0.1.0 \
+              -f body="" \
+              -F draft=true)"
           fi
-          tag="$(jq -r '.tagName' <<<"$release")"
+          tag="$(jq -r '.tag_name' <<<"$release")"
           echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
-          echo "upload_url=$(jq -r '.uploadUrl' <<<"$release")" >> "$GITHUB_OUTPUT"
+          echo "upload_url=$(jq -r '.upload_url' <<<"$release")" >> "$GITHUB_OUTPUT"
 
   build-windows:
     if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'desktop' || github.event.inputs.platform == 'windows' }}
