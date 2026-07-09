@@ -35,7 +35,7 @@ jobs:
           myToken: ${{ github.token }}
 
   build-windows:
-    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'windows' }}
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'desktop' || github.event.inputs.platform == 'windows' }}
     needs: [get-release]
     strategy:
       fail-fast: false
@@ -202,7 +202,7 @@ jobs:
           path: ui/flutter/build/windows/Output/Gopeed-v${{ needs.get-release.outputs.version }}-windows-${{ matrix.arch }}-portable.zip
           if-no-files-found: error
   build-macos-amd64-lib:
-    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos' }}
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'desktop' || github.event.inputs.platform == 'macos' }}
     runs-on: macos-15-intel
     needs: [get-release]
     steps:
@@ -223,7 +223,7 @@ jobs:
           path: ui/flutter/lib-amd64
           key: macos-amd64-lib-${{ github.run_id }}
   build-macos:
-    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos' }}
+    if: ${{ github.event.inputs.platform == 'all' || github.event.inputs.platform == 'desktop' || github.event.inputs.platform == 'macos' }}
     runs-on: macos-latest
     strategy:
       matrix:

@@ -19,7 +19,10 @@ class GopeedTheme {
     });
   }
 
-  static ThemeData light([int accentColor = defaultAccentColor]) {
+  static ThemeData light([
+    int accentColor = defaultAccentColor,
+    int tabActiveColor = 0xFF3D7E3A,
+  ]) {
     final color = Color(accentColor);
     final swatch = _swatch(color);
     final accent = _swatch(
@@ -31,11 +34,17 @@ class GopeedTheme {
       primarySwatch: swatch,
     );
     return base.copyWith(
-      colorScheme: base.colorScheme.copyWith(secondary: accent),
+      colorScheme: base.colorScheme.copyWith(
+        primary: Color(tabActiveColor),
+        secondary: accent,
+      ),
     );
   }
 
-  static ThemeData dark([int accentColor = defaultAccentColor]) {
+  static ThemeData dark([
+    int accentColor = defaultAccentColor,
+    int tabActiveColor = 0xFF3D7E3A,
+  ]) {
     final color = Color(accentColor);
     final swatch = _swatch(color);
     final accent = _swatch(
@@ -47,7 +56,10 @@ class GopeedTheme {
       primarySwatch: swatch,
     );
     return base.copyWith(
-      colorScheme: base.colorScheme.copyWith(secondary: accent),
+      colorScheme: base.colorScheme.copyWith(
+        primary: Color(tabActiveColor),
+        secondary: accent,
+      ),
     );
   }
 }

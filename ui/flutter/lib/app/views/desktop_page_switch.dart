@@ -14,6 +14,10 @@ class DesktopPageSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleColor = Theme.of(context).appBarTheme.titleTextStyle?.color ??
+        Theme.of(context).textTheme.titleLarge?.color ??
+        Theme.of(context).colorScheme.onSurface;
+    final activeColor = Theme.of(context).colorScheme.primary;
     return Align(
       alignment: Alignment.topCenter,
       child: Row(
@@ -24,14 +28,14 @@ class DesktopPageSwitch extends StatelessWidget {
             height: 42,
             margin: const EdgeInsets.only(bottom: 6),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFF3D7E3A)),
+              border: Border.all(color: activeColor),
               borderRadius: BorderRadius.circular(10),
             ),
             clipBehavior: Clip.antiAlias,
             child: TabBar(
-              indicator: const BoxDecoration(color: Color(0xFF3D7E3A)),
+              indicator: BoxDecoration(color: activeColor),
               labelColor: Colors.white,
-              unselectedLabelColor: Colors.white,
+              unselectedLabelColor: titleColor.withValues(alpha: 0.6),
               labelStyle: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,

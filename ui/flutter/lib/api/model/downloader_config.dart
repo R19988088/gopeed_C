@@ -107,6 +107,7 @@ class Ed2kConfig {
 class ExtraConfig {
   String themeMode;
   int accentColor;
+  int tabActiveColor;
   String locale;
   bool lastDeleteTaskKeep;
   bool defaultDirectDownload;
@@ -122,6 +123,7 @@ class ExtraConfig {
   ExtraConfig({
     this.themeMode = '',
     this.accentColor = 0xFF79C476,
+    this.tabActiveColor = 0xFF3D7E3A,
     this.locale = '',
     this.lastDeleteTaskKeep = false,
     this.defaultDirectDownload = false,

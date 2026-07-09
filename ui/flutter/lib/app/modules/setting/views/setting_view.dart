@@ -972,23 +972,43 @@ class SettingView extends GetView<SettingController> {
                   .toList(),
             ));
     Widget buildAccentColor() {
+      void updateTheme() {
+        final extra = downloaderCfg.value.extra;
+        Get.changeTheme(
+          Theme.of(context).brightness == Brightness.dark
+              ? GopeedTheme.dark(extra.accentColor, extra.tabActiveColor)
+              : GopeedTheme.light(extra.accentColor, extra.tabActiveColor),
+        );
+        debounceSave();
+      }
+
       return ListTile(
         title: const Text('强调色'),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: _AccentColorPicker(
-            color: Color(downloaderCfg.value.extra.accentColor),
-            onChanged: (color) {
-              downloaderCfg.update((val) {
-                val!.extra.accentColor = color.value;
-              });
-              Get.changeTheme(
-                Theme.of(context).brightness == Brightness.dark
-                    ? GopeedTheme.dark(color.value)
-                    : GopeedTheme.light(color.value),
-              );
-              debounceSave();
-            },
+          child: Wrap(
+            spacing: 28,
+            runSpacing: 16,
+            children: [
+              _AccentColorPicker(
+                color: Color(downloaderCfg.value.extra.accentColor),
+                onChanged: (color) {
+                  downloaderCfg.update((val) {
+                    val!.extra.accentColor = color.value;
+                  });
+                  updateTheme();
+                },
+              ),
+              _AccentColorPicker(
+                color: Color(downloaderCfg.value.extra.tabActiveColor),
+                onChanged: (color) {
+                  downloaderCfg.update((val) {
+                    val!.extra.tabActiveColor = color.value;
+                  });
+                  updateTheme();
+                },
+              ),
+            ],
           ),
         ),
       );
