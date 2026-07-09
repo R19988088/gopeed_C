@@ -34,7 +34,7 @@ class GopeedTheme {
     );
   }
 
-  static InputDecorationTheme _inputDecorationTheme(ThemeData base) {
+  static InputDecorationThemeData _inputDecorationTheme(ThemeData base) {
     return base.inputDecorationTheme.copyWith(
       labelStyle: _size(base.inputDecorationTheme.labelStyle) ??
           TextStyle(color: base.hintColor, fontSize: standardFontSize),
