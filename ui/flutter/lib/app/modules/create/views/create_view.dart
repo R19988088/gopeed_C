@@ -797,29 +797,17 @@ class CreateView extends GetView<CreateController> {
     }
     return DesktopHomeAppBar(
       title: 'create'.tr,
+      showBack: true,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(48),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 24,
-              top: 0,
-              height: 48,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => Get.rootDelegate.offNamed(Routes.TASK),
-              ),
-            ),
-            Obx(
-              () => DesktopPageSwitch(
-                index: controller.showAdvanced.value ? 1 : 0,
-                tabs: ['task'.tr, 'advancedOptions'.tr],
-                onTap: (index) {
-                  controller.showAdvanced.value = index == 1;
-                },
-              ),
-            ),
-          ],
+        child: Obx(
+          () => DesktopPageSwitch(
+            index: controller.showAdvanced.value ? 1 : 0,
+            tabs: ['task'.tr, 'advancedOptions'.tr],
+            onTap: (index) {
+              controller.showAdvanced.value = index == 1;
+            },
+          ),
         ),
       ),
     );
