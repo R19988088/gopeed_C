@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 class DesktopPageSwitch extends StatelessWidget {
@@ -5,10 +7,12 @@ class DesktopPageSwitch extends StatelessWidget {
     super.key,
     required this.tabs,
     required this.onTap,
+    this.index = 0,
   });
 
   final List<String> tabs;
   final ValueChanged<int> onTap;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +31,71 @@ class DesktopPageSwitch extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         clipBehavior: Clip.antiAlias,
-        child: TabBar(
-          indicator: BoxDecoration(color: activeColor),
-          labelColor: Colors.white,
-          unselectedLabelColor: titleColor.withValues(alpha: 0.6),
-          labelStyle: const TextStyle(
+        child: Row(
+          children: [
+            for (var i = 0; i < tabs.length; i++)
+              Expanded(
+                child: InkWell(
+                  onTap: () => onTap(i),
+                  child: _FlippingTab(
+                    label: tabs[i],
+                    selected: index == i,
+                    selectedColor: activeColor,
+                    unselectedColor: titleColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FlippingTab extends StatelessWidget {
+  const _FlippingTab({
+    required this.label,
+    required this.selected,
+    required this.selectedColor,
+    required this.unselectedColor,
+  });
+
+  final String label;
+  final bool selected;
+  final Color selectedColor;
+  final Color unselectedColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 180),
+      transitionBuilder: (child, animation) {
+        return AnimatedBuilder(
+          animation: animation,
+          child: child,
+          builder: (context, child) {
+            final angle = (1 - animation.value) * math.pi / 2;
+            return Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(angle),
+              child: child,
+            );
+          },
+        );
+      },
+      child: Container(
+        key: ValueKey(selected),
+        color: selected ? selectedColor : Colors.transparent,
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.white : unselectedColor,
             fontSize: 15,
             fontWeight: FontWeight.w700,
           ),
-          tabs: tabs.map((label) => Tab(text: label)).toList(),
-          onTap: onTap,
         ),
       ),
     );

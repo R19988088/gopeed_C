@@ -824,11 +824,14 @@ class CreateView extends GetView<CreateController> {
                 onPressed: () => Get.rootDelegate.offNamed(Routes.TASK),
               ),
             ),
-            DesktopPageSwitch(
-              tabs: ['task'.tr, 'advancedOptions'.tr],
-              onTap: (index) {
-                controller.showAdvanced.value = index == 1;
-              },
+            Obx(
+              () => DesktopPageSwitch(
+                index: controller.showAdvanced.value ? 1 : 0,
+                tabs: ['task'.tr, 'advancedOptions'.tr],
+                onTap: (index) {
+                  controller.showAdvanced.value = index == 1;
+                },
+              ),
             ),
           ],
         ),

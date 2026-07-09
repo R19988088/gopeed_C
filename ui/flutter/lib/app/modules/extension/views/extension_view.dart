@@ -151,6 +151,7 @@ class ExtensionView extends GetView<ExtensionController> {
 
   Widget _buildPageTabs(int index) {
     return DesktopPageSwitch(
+      index: index,
       tabs: ['extensions'.tr, 'setting'.tr],
       onTap: (value) {
         if (value == index) return;

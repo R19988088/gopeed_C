@@ -40,26 +40,29 @@ class TaskView extends GetView<TaskController> {
           onMenuTap: () => Get.rootDelegate.offAndToNamed(Routes.EXTENSION),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),
-            child: DesktopPageSwitch(
-              tabs: ['downloading'.tr, 'downloaded'.tr],
-              onTap: (index) {
-                if (controller.tabIndex.value == index) return;
-                controller.tabIndex.value = index;
-                final downloadingController =
-                    Get.find<TaskDownloadingController>();
-                final downloadedController =
-                    Get.find<TaskDownloadedController>();
-                switch (index) {
-                  case 0:
-                    downloadingController.start();
-                    downloadedController.stop();
-                    break;
-                  case 1:
-                    downloadingController.stop();
-                    downloadedController.start();
-                    break;
-                }
-              },
+            child: Obx(
+              () => DesktopPageSwitch(
+                index: controller.tabIndex.value,
+                tabs: ['downloading'.tr, 'downloaded'.tr],
+                onTap: (index) {
+                  if (controller.tabIndex.value == index) return;
+                  controller.tabIndex.value = index;
+                  final downloadingController =
+                      Get.find<TaskDownloadingController>();
+                  final downloadedController =
+                      Get.find<TaskDownloadedController>();
+                  switch (index) {
+                    case 0:
+                      downloadingController.start();
+                      downloadedController.stop();
+                      break;
+                    case 1:
+                      downloadingController.stop();
+                      downloadedController.start();
+                      break;
+                  }
+                },
+              ),
             ),
           ),
         ),
