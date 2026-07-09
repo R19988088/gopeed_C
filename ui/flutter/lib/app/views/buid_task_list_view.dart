@@ -20,11 +20,13 @@ import 'file_icon.dart';
 class BuildTaskListView extends GetView {
   final List<Task> tasks;
   final List<String> selectedTaskIds;
+  final ScrollController? scrollController;
 
   const BuildTaskListView({
     Key? key,
     required this.tasks,
     required this.selectedTaskIds,
+    this.scrollController,
   }) : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class BuildTaskListView extends GetView {
 
   Widget buildTaskList(BuildContext context, tasks) {
     return ListView.builder(
+      controller: scrollController,
       itemCount: tasks.length + 1,
       itemBuilder: (context, index) {
         if (index == tasks.length) {

@@ -30,6 +30,9 @@ import '../../../views/directory_selector.dart';
 import '../../../views/file_tree_view.dart';
 import '../../app/controllers/app_controller.dart';
 import '../../history/views/history_view.dart';
+import '../../task/controllers/task_controller.dart';
+import '../../task/controllers/task_downloaded_controller.dart';
+import '../../task/controllers/task_downloading_controller.dart';
 import '../controllers/create_controller.dart';
 
 class CreateView extends GetView<CreateController> {
@@ -797,17 +800,29 @@ class CreateView extends GetView<CreateController> {
     }
     return DesktopHomeAppBar(
       title: 'create'.tr,
-      showBack: true,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(48),
-        child: Obx(
-          () => DesktopPageSwitch(
-            index: controller.showAdvanced.value ? 1 : 0,
-            tabs: ['task'.tr, 'advancedOptions'.tr],
-            onTap: (index) {
-              controller.showAdvanced.value = index == 1;
-            },
-          ),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 24,
+              top: 0,
+              height: 48,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Get.rootDelegate.offNamed(Routes.TASK),
+              ),
+            ),
+            Obx(
+              () => DesktopPageSwitch(
+                index: controller.showAdvanced.value ? 1 : 0,
+                tabs: ['task'.tr, 'advancedOptions'.tr],
+                onTap: (index) {
+                  controller.showAdvanced.value = index == 1;
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -858,6 +873,13 @@ class CreateView extends GetView<CreateController> {
             : _urlController.text.trim();
 
         final urls = Util.textToLines(submitUrl);
+        if (!isWebFileChosen && urls.length == 1) {
+          final downloadedTask = await _findDownloadedTask(urls.first);
+          if (downloadedTask != null) {
+            await _showDownloadedTask(downloadedTask);
+            return;
+          }
+        }
 
         // Check if there is a pending update task (only for single URL)
         if (urls.length == 1) {
@@ -957,6 +979,40 @@ class CreateView extends GetView<CreateController> {
         ],
       ),
     );
+  }
+
+  Future<Task?> _findDownloadedTask(String url) async {
+    final normalizedUrl = _normalizeDownloadUrl(url);
+    if (normalizedUrl.isEmpty) return null;
+    final tasks = await getTasks([Status.done]);
+    for (final task in tasks) {
+      final req = task.meta.req;
+      if (_normalizeDownloadUrl(req.rawUrl ?? '') == normalizedUrl ||
+          _normalizeDownloadUrl(req.url) == normalizedUrl) {
+        return task;
+      }
+    }
+    return null;
+  }
+
+  String _normalizeDownloadUrl(String url) {
+    return url.trim();
+  }
+
+  Future<void> _showDownloadedTask(Task task) async {
+    final taskController = Get.find<TaskController>();
+    final downloadingController = Get.find<TaskDownloadingController>();
+    final downloadedController = Get.find<TaskDownloadedController>();
+
+    taskController.tabIndex.value = 1;
+    downloadingController.stop();
+    await downloadedController.getTasksState();
+    taskController.selectTask.value = task;
+    downloadedController.focusTask(task.id);
+    await Get.rootDelegate.offNamed(Routes.TASK);
+    Future.delayed(const Duration(milliseconds: 50), () {
+      downloadedController.focusTask(task.id);
+    });
   }
 
   /// Updates the pending task with new URL and headers
