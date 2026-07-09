@@ -25,6 +25,7 @@ import '../../../../util/util.dart';
 import '../../../routes/app_pages.dart';
 import '../../../views/compact_checkbox.dart';
 import '../../../views/desktop_home_app_bar.dart';
+import '../../../views/desktop_page_switch.dart';
 import '../../../views/directory_selector.dart';
 import '../../../views/file_tree_view.dart';
 import '../../app/controllers/app_controller.dart';
@@ -167,32 +168,34 @@ class CreateView extends GetView<CreateController> {
       });
     }
 
-    return Scaffold(
-      appBar: _buildAppBar(),
-      floatingActionButton: Obx(() {
-        final confirming = controller.isConfirming.value;
-        return FloatingActionButton.extended(
-          onPressed: confirming ? null : _doConfirm,
-          label: confirming
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text('confirm'.tr),
-        );
-      }),
-      body: DropTarget(
-        onDragDone: (details) async {
-          if (!Util.isWeb()) {
-            _urlController.text = details.files[0].path;
-            return;
-          }
-          _urlController.text = details.files[0].name;
-          final bytes = await details.files[0].readAsBytes();
-          controller.setFileDataUri(bytes);
-        },
-        child: GestureDetector(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        floatingActionButton: Obx(() {
+          final confirming = controller.isConfirming.value;
+          return FloatingActionButton.extended(
+            onPressed: confirming ? null : _doConfirm,
+            label: confirming
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text('confirm'.tr),
+          );
+        }),
+        body: DropTarget(
+          onDragDone: (details) async {
+            if (!Util.isWeb()) {
+              _urlController.text = details.files[0].path;
+              return;
+            }
+            _urlController.text = details.files[0].name;
+            final bytes = await details.files[0].readAsBytes();
+            controller.setFileDataUri(bytes);
+          },
+          child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
@@ -761,22 +764,24 @@ class CreateView extends GetView<CreateController> {
                                       controller.directDownload.value =
                                           value ?? false;
                                     }),
-                                TextButton(
-                                  onPressed: () {
-                                    controller.showAdvanced.value =
-                                        !controller.showAdvanced.value;
-                                  },
-                                  child: Row(children: [
-                                    Obx(() => Checkbox(
-                                          value: controller.showAdvanced.value,
-                                          onChanged: (bool? value) {
-                                            controller.showAdvanced.value =
-                                                value ?? false;
-                                          },
-                                        )),
-                                    Text('advancedOptions'.tr),
-                                  ]),
-                                ),
+                                if (!Util.isDesktop())
+                                  TextButton(
+                                    onPressed: () {
+                                      controller.showAdvanced.value =
+                                          !controller.showAdvanced.value;
+                                    },
+                                    child: Row(children: [
+                                      Obx(() => Checkbox(
+                                            value:
+                                                controller.showAdvanced.value,
+                                            onChanged: (bool? value) {
+                                              controller.showAdvanced.value =
+                                                  value ?? false;
+                                            },
+                                          )),
+                                      Text('advancedOptions'.tr),
+                                    ]),
+                                  ),
                               ],
                             ),
                           ],
@@ -788,6 +793,7 @@ class CreateView extends GetView<CreateController> {
               ),
             ),
           ),
+        ),
         ),
       ),
     );
@@ -805,10 +811,27 @@ class CreateView extends GetView<CreateController> {
     }
     return DesktopHomeAppBar(
       title: 'create'.tr,
-      showBack: true,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(48),
-        child: SizedBox(height: 48),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(48),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 24,
+              top: 0,
+              height: 48,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Get.rootDelegate.offNamed(Routes.TASK),
+              ),
+            ),
+            DesktopPageSwitch(
+              tabs: ['task'.tr, 'advancedOptions'.tr],
+              onTap: (index) {
+                controller.showAdvanced.value = index == 1;
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
